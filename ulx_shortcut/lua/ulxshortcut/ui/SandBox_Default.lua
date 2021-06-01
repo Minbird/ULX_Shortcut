@@ -283,6 +283,10 @@ local PLAYER_LINE = {
 	Think = function( self )
 
 		if ( !IsValid( self.Player ) ) then
+			if istable(SelectedPlayers) then
+				local removedValue = table.RemoveByValue(SelectedPlayers, self.Player) -- remove NULL player
+				--print("removed Null player")
+			end
 			self:SetZPos( 9999 ) -- Causes a rebuild
 			self:Remove()
 			return
@@ -443,7 +447,7 @@ local SCORE_BOARD = {
 		self.AllPlayerSelectMirror.IsSelected = false
 		self.AllPlayerSelectMirror.DoClick = function() 
 		
-			selectCount = math.abs(#SelectedPlayers - #player.GetAll())
+			selectCount = math.abs(selectCount - #player.GetAll())
 			self.AllPlayerSelectMirror.IsSelected = !self.AllPlayerSelectMirror.IsSelected
 			self:SelectAllPlayers(self.AllPlayerSelectMirror.IsSelected, true)
 			
@@ -485,6 +489,8 @@ local SCORE_BOARD = {
 				self.AllPlayerSelect:SetIcon( "icon16/tick.png" )
 				self.AllPlayerSelect.IsSelected = false
 			end
+			
+			--PrintTable(SelectedPlayers)
 			
 		end)
 

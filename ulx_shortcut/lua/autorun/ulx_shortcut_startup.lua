@@ -2,10 +2,10 @@ print("[ULX Shortcut] Start Up System!")
 
 
 ulxSTC = {}
-ulxSTC.CurVersion = 1.01
-ulxSTC.CurVersionString = "1.01"
-ulxSTC.NewerVersion = 1.01
-ulxSTC.NewerVersionString = "1.01"
+ulxSTC.CurVersion = 2
+ulxSTC.CurVersionString = "1.0.1"
+ulxSTC.NewerVersion = 2
+ulxSTC.NewerVersionString = "1.0.1"
 
 print("///////////////////////////////")
 print("//	ULX Shortcut StartUp	//")
@@ -15,7 +15,9 @@ print("[ULX Shortcut] Loading Main Files...")
 
 print("[ULX Shortcut] Try add File: ulxshortcut/ulxshortcut.lua")
 AddCSLuaFile("ulxshortcut/ulxshortcut.lua")
-include("ulxshortcut/ulxshortcut.lua")
+if CLIENT then
+	include("ulxshortcut/ulxshortcut.lua")
+end
 
 print("[ULX Shortcut] Try add Client side File: ulxshortcut/ui.lua")
 AddCSLuaFile("ulxshortcut/ui.lua")
@@ -83,7 +85,7 @@ end,
 
 print("[ULX Shortcut] Done!")
 
-if table.IsEmpty( ulxSTC:GetUlxModules() ) then
+if CLIENT and table.IsEmpty( ulxSTC:GetUlxModules() ) then
 	print("[ULX Shortcut] Warning! ULX's modules has not loaded.")
 end
 --[[if CLIENT then
