@@ -47,7 +47,7 @@ If you have an Shortcut Array, Press 'Apply shared shortcuts' button on bottom, 
 
 
 
-# How to make another shortcuts?
+# How to make another shortcut?
 
 1. Right click on any shortcut buttons.
 
@@ -76,7 +76,7 @@ To execute commands to selected users, click the shortcut button belonging to an
 For unselected users, click the shortcut button that each has. (In this case, the selected user is not targeted.)
 
 
-* [When one user are selected]
+* [When one user is selected]
 
 nothing special. (It's the same as no one is selected.)
 
