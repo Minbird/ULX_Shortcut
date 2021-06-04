@@ -140,9 +140,16 @@ function ulxSTC:RunCommandByCmdStr( cmdStr, targetPlys, InstantArgs )
 				if numArg == nil then InstantArgsCount = InstantArgsCount + 1 end
 			end
 
-			if v == "BoolArg" then
+			if v == "BoolArg" and table.Count(argsList) == k then
 				if InstantArgs[InstantArgsCount] == "false" then
 					args[2] = string.Explode( " ", mo.opposite )[2]
+				end
+				if boArg == nil then InstantArgsCount = InstantArgsCount + 1 end
+			elseif v == "BoolArg" and table.Count(argsList) != k then
+				if InstantArgs[InstantArgsCount] == true then
+					table.insert(args,"1")
+				else
+					table.insert(args,"0")
 				end
 				if boArg == nil then InstantArgsCount = InstantArgsCount + 1 end
 			end

@@ -173,7 +173,7 @@ function ulxSTC.HKEditor:CreatArgsList( mo, isEdit, hkNum ) -- String, Number, B
 	self.HKName:DockMargin( 0, 20, 0, 0 )
 	self.HKName:SetPlaceholderText( ulxSTC:Str( "Shortcut_Name_Setting" ) )
 	self.HKName.OnEnter = function( self )
-		chat.AddText( self:GetValue() )
+		--chat.AddText( self:GetValue() )
 	end
 	
 	PanelTall = PanelTall + 42
@@ -240,7 +240,7 @@ function ulxSTC.HKEditor:CreatArgsList( mo, isEdit, hkNum ) -- String, Number, B
 	function self.color_cube.UpdateColors(s,col)
 		color_label:SetText("Color( "..col.r..", "..col.g..", "..col.b.." )")
 		color_label:SetColor(s:GetRGB())
-		SetClipboardText(color_label:GetText())
+		--SetClipboardText(color_label:GetText())
 			
 		self.HKColorData = s:GetRGB()
 	end
@@ -267,7 +267,7 @@ function ulxSTC.HKEditor:CreatArgsList( mo, isEdit, hkNum ) -- String, Number, B
 		end
 		
 		if v == "BoolArg" then
-			panel = ulxSTC.HKEditor:BoolArg()
+			panel = ulxSTC.HKEditor:BoolArg( mo.args[k] )
 			PanelTall = PanelTall + 32 + 10 + 18
 		end
 		
@@ -335,7 +335,11 @@ function ulxSTC.HKEditor:CreatEditHKButton( hkNum )
 		table.remove(ulxSTC:GetAllCommandHK(), hkNum)
 		local args = {}
 		for k, v in pairs(self.argPanels) do
-			table.insert(args, v:GetValue())
+			if v.GetChecked then
+				table.insert(args, v:GetChecked()) -- for checkbox
+			else
+				table.insert(args, v:GetValue())
+			end
 		end
 		table.insert(ulxSTC:GetAllCommandHK(), hkNum, {name=self.HKName:GetText() or "", cmd=hk.cmd, color=self.HKColorData, icon=self.HKIconData, args=args, target=hk.target})
 		hook.Run("ULXSHORTCUT_COMMANDHK_ONCHANGE")
@@ -438,27 +442,42 @@ function ulxSTC.HKEditor:NumArg( arg )
 	return num
 end
 
-function ulxSTC.HKEditor:BoolArg()
+function ulxSTC.HKEditor:BoolArg( arg )
 
-	local bools = vgui.Create( "DComboBox", self.DPanel )
-	bools:DockMargin( 0, 10, 0, 0 )
-	bools:SetTall(32)
-	bools:Dock( TOP )
-
-	bools:AddChoice( "true", true, true, "icon16/tick.png" )
-	bools:AddChoice( "false", false, false, "icon16/cross.png" )
-	--bools:AddChoice( "작동 방식: toggle", "toggle", true, "icon16/arrow_switch.png" )
+	local bools = {}
 	
-	local margin = vgui.Create( "Panel", self.DPanel )
-	margin:Dock( TOP )
-	margin:SetTall(18)
-	margin.Paint = function() end
+	if arg.hint then
 	
-	local help = vgui.Create( "DImageButton", margin )
-	help:SetPos( self.DPanel:GetWide() - 18, 1 )
-	help:SetImage( "icon16/information.png" )
-	help:SizeToContents()
-	help:SetTooltip( ulxSTC:Str( "Bool_Arg_Ex" ) )
+		bools = vgui.Create( "DCheckBoxLabel", self.DPanel )
+		bools:DockMargin( 0, 10, 0, 0 )
+		bools:SetTall(32)
+		bools:Dock( TOP )
+		bools:SetValue( arg.default or false )
+		bools:SetText( arg.hint or "" )
+	
+	else
+	
+		bools = vgui.Create( "DComboBox", self.DPanel )
+		bools:DockMargin( 0, 10, 0, 0 )
+		bools:SetTall(32)
+		bools:Dock( TOP )
+		
+		bools:AddChoice( "true", true, true, "icon16/tick.png" )
+		bools:AddChoice( "false", false, false, "icon16/cross.png" )
+		--bools:AddChoice( "작동 방식: toggle", "toggle", true, "icon16/arrow_switch.png" )
+		
+		local margin = vgui.Create( "Panel", self.DPanel )
+		margin:Dock( TOP )
+		margin:SetTall(18)
+		margin.Paint = function() end
+		
+		local help = vgui.Create( "DImageButton", margin )
+		help:SetPos( self.DPanel:GetWide() - 18, 1 )
+		help:SetImage( "icon16/information.png" )
+		help:SizeToContents()
+		help:SetTooltip( ulxSTC:Str( "Bool_Arg_Ex" ) )
+		
+	end
 	
 	return bools
 end
