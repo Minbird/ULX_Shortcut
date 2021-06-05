@@ -76,9 +76,9 @@ To execute commands to selected users, click the shortcut button belonging to an
 For unselected users, click the shortcut button that each has. (In this case, the selected user is not targeted.)
 
 
-* [When one user is selected]
+* [When one user was selected]
 
-nothing special. (It's the same as no one is selected.)
+nothing special. (It's the same as no one was selected.)
 
 
 * [When all users are selected]
