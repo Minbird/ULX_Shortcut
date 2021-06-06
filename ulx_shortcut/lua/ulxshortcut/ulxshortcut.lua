@@ -67,7 +67,7 @@ end
 function ulxSTC:GetArgsType( mo ) -- receive module, return table(Types List)
 
 	local argsN = {}
-	if mo.args == nil or #mo.args == 0 then return argsN end
+	if mo == nil or mo.args == nil or #mo.args == 0 then return argsN end
 	
 	for k, v in pairs(mo.args) do
 		table.insert(argsN, ulxSTC:GetArgType( v ))
@@ -106,6 +106,12 @@ end
 function ulxSTC:RunCommandByCmdStr( cmdStr, targetPlys, InstantArgs )
 	
 	local mo = ulxSTC:GetModule( cmdStr )
+	
+	if mo == nil or mo == {} then
+		chat.AddText( Color( 255, 0, 0 ), ulxSTC:Str( "MoLodingError", cmdStr or "Unknown command" ) )
+		return 
+	end
+	
 	local argsList = ulxSTC:GetArgsType( mo )
 	local args = string.Explode( " ", cmdStr )
 	local targetPlys = targetPlys or {}

@@ -2,10 +2,10 @@ print("[ULX Shortcut] Start Up System!")
 
 
 ulxSTC = {}
-ulxSTC.CurVersion = 3
-ulxSTC.CurVersionString = "1.0.2"
-ulxSTC.NewerVersion = 3
-ulxSTC.NewerVersionString = "1.0.2"
+ulxSTC.CurVersion = 4
+ulxSTC.CurVersionString = "1.0.3"
+ulxSTC.NewerVersion = 4
+ulxSTC.NewerVersionString = "1.0.3"
 
 print("///////////////////////////////")
 print("//	ULX Shortcut StartUp	//")

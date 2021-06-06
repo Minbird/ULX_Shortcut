@@ -93,6 +93,15 @@ function ulxSTC.HKEditor:ShareMode( direct )
 end
 
 function ulxSTC.HKEditor:EditMode(hk, num)
+	
+	local mo = ulxSTC:GetModule( hk.cmd )
+	
+	if mo == nil or mo == {} then
+		chat.AddText( Color( 255, 0, 0 ), ulxSTC:Str( "MoLodingError", hk.cmd or "Unknown command" ) )
+		ulxSTC.HKEditor.DFrame:Close()
+		return 
+	end
+	
 	ulxSTC.HKEditor:CreatArgsList( ulxSTC:GetModule( hk.cmd ), true, num )
 end
 
@@ -147,6 +156,12 @@ function ulxSTC.HKEditor:CreatArgsList( mo, isEdit, hkNum ) -- String, Number, B
 	
 	self.HKColorData = nil
 	self.HKIconData = nil
+	
+	if mo == nil then
+		chat.AddText( Color( 255, 0, 0 ), ulxSTC:Str( "MoLodingError", "Unknown command" ) )
+		ulxSTC.HKEditor.DFrame:Close()
+		return 
+	end
 	
 	ulxSTC.HKEditor.DFrame:SetTitle( ulxSTC:Str( "Command_Shortcut_Setting", mo.cmd ) )
 	local PanelTall = 60
