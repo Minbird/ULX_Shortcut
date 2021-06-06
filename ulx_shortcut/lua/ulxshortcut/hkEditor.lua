@@ -102,7 +102,7 @@ function ulxSTC.HKEditor:EditMode(hk, num)
 		return 
 	end
 	
-	ulxSTC.HKEditor:CreatArgsList( ulxSTC:GetModule( hk.cmd ), true, num )
+	ulxSTC.HKEditor:CreatArgsList( mo, true, num )
 end
 
 function ulxSTC.HKEditor:CreatModuleList( type )
