@@ -278,7 +278,7 @@ function ulxSTC.HKEditor:CreatArgsList( mo, isEdit, hkNum ) -- String, Number, B
 		
 		if v == "NumArg" then
 			panel = ulxSTC.HKEditor:NumArg( mo.args[k] )
-			PanelTall = PanelTall + 32 + 10
+			PanelTall = PanelTall + 32 + 18 + 10
 		end
 		
 		if v == "BoolArg" then
@@ -327,7 +327,16 @@ function ulxSTC.HKEditor:CreatEditHKButton( hkNum )
 	self.color_cube:SetColor( hk.color or Color(255,255,255) )
 	self.HKIcon:SelectIcon( hk.icon )
 	self.HKIconData = hk.icon
+	local cofunc = {}
 	for k, v in pairs(self.argPanels) do
+		if v.UseMath then
+			if not isnumber(tonumber(hk.args[k])) then -- 고급 수식 사용 시
+				v.UseMath:SetValue( true )
+				timer.Simple( 0.01, function() v.MakeMathTextEtry( nil, true ) end) -- smarter way?
+				v.MathText = hk.args[k]
+				v.Etry:SetText( hk.args[k] )
+			end
+		end
 		v:SetValue(hk.args[k])
 	end
 
@@ -350,9 +359,11 @@ function ulxSTC.HKEditor:CreatEditHKButton( hkNum )
 		table.remove(ulxSTC:GetAllCommandHK(), hkNum)
 		local args = {}
 		for k, v in pairs(self.argPanels) do
-			if v.GetChecked then
-				table.insert(args, v:GetChecked()) -- for checkbox
-			else
+			if v.GetChecked then -- for checkbox
+				table.insert(args, v:GetChecked())
+			elseif IsValid(v.UseMath) and v.UseMath:GetChecked() then -- 고급 인수를 사용할 때
+				table.insert(args, v.Etry:GetValue())
+			else -- other args like string
 				table.insert(args, v:GetValue())
 			end
 		end
@@ -365,7 +376,7 @@ function ulxSTC.HKEditor:CreatEditHKButton( hkNum )
 end
 
 function ulxSTC.HKEditor:CreatNewHKButton( mo )
-
+	
 	if ulxSTC.HKEditor.DPanel == nil or not ulxSTC.HKEditor.DPanel:IsValid() then return end
 
 	local bottomButton = vgui.Create( "DPanel", ulxSTC.HKEditor.DPanel )
@@ -387,6 +398,10 @@ function ulxSTC.HKEditor:CreatNewHKButton( mo )
 		ulxSTC.HKEditor.DFrame:Close()
 		local args = {}
 		for k, v in pairs(self.argPanels) do
+			if IsValid(v.UseMath) and v.UseMath:GetChecked() then -- 고급 인수를 사용할 때
+				table.insert(args, v.Etry:GetValue())
+				continue
+			end
 			table.insert(args, v:GetValue())
 		end
 		ulxSTC:AddCommandHK( self.HKName:GetText() or "", mo.cmd, self.HKColorData, self.HKIconData, args)
@@ -442,17 +457,68 @@ end
 
 function ulxSTC.HKEditor:NumArg( arg )
 
-	local num = vgui.Create( "DNumSlider", self.DPanel )
-	num:DockMargin( 0, 10, 0, 0 )
+	local NumArgPanel = vgui.Create( "DPanel", self.DPanel )
+	NumArgPanel:DockMargin( 0, 10, 0, 0 )
+	NumArgPanel:SetTall(32 + 18)
+	NumArgPanel:SetWide(self.DPanel:GetWide())
+	NumArgPanel:Dock( TOP )
+	NumArgPanel:SetBackgroundColor( Color(255,255,255) )
+	
+
+	local num = vgui.Create( "DNumSlider", NumArgPanel )
+	num:DockMargin( 5, 0, 5, 0 )
 	num:SetTall(32)
-	num:SetWide(self.DPanel:GetWide())
+	--num:SetWide(self.DPanel:GetWide())
 	num:SetMin( arg.min or 0 )
 	num:SetMax( arg.max or 100 )
 	num:SetValue( 0 )
 	num:SetDecimals( 0 )
 	num:SetText( arg.hint or "" )
-	
 	num:Dock( TOP )
+	num:SetDark( true )
+	num.OnValueChanged = function( s, n )
+		num.UseMath:SetValue( false )
+	end
+	
+	num.UseMath = vgui.Create( "DCheckBoxLabel", NumArgPanel )
+	num.UseMath:DockMargin( 5, 0, 5, 0 )
+	num.UseMath:SetTall(18)
+	num.UseMath:Dock( TOP )
+	num.UseMath:SetValue( false )
+	num.UseMath:SetText( ulxSTC:Str( "UseNumExpHere" ) )
+	num.UseMath:SetDark( true )
+	
+	local help = vgui.Create( "DImageButton", NumArgPanel )
+	help:SetPos( 450 - 28, 33 )
+	help:SetImage( "icon16/information.png" )
+	help:SizeToContents()
+	help:SetTooltip( ulxSTC:Str( "UseNumExpHereExp" ) )
+	help.DoClick = function()
+		gui.OpenURL( "https://sites.google.com/view/minbirdworkshop/ulx-shortcut/help" )
+	end
+	
+	num.MakeMathTextEtry = function ( s, bo )
+		if bo then
+			num.Etry = vgui.Create( "DTextEntry", num )
+			num.Etry:SetSize( self.DPanel:GetWide() - num.Label:GetWide() - 10, 32 )
+			num.Etry:SetPos( num.Label:GetWide() or 0, 0 )
+			num.MathText = num.MathText or ""
+			num.Etry:SetText( num.MathText )
+		else
+			if ispanel(num.Etry) and IsValid(num.Etry) then
+				num.MathText = num.Etry:GetText() or ""
+				num.Etry:Remove()
+			end
+		end
+	end
+	
+	
+	num.UseMath.OnChange = function( s, bo )
+		num.MakeMathTextEtry( nil, bo )
+		if bo then
+			num.Etry:RequestFocus()
+		end
+	end
 	
 	return num
 end

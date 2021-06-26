@@ -2,14 +2,17 @@ print("[ULX Shortcut] Start Up System!")
 
 
 ulxSTC = {}
-ulxSTC.CurVersion = 4
-ulxSTC.CurVersionString = "1.0.3"
-ulxSTC.NewerVersion = 4
-ulxSTC.NewerVersionString = "1.0.3"
+ulxSTC.CurVersion = 5
+ulxSTC.CurVersionString = "1.1"
+ulxSTC.NewerVersion = 5
+ulxSTC.NewerVersionString = "1.1"
+
 
 print("///////////////////////////////")
 print("//	ULX Shortcut StartUp	//")
 print("///////////////////////////////")
+print("System Version: " .. ulxSTC.CurVersionString)
+print("System Version Date: 2021.6.26\n")
 print("[ULX Shortcut] Loading...")
 print("[ULX Shortcut] Loading Main Files...")
 
@@ -35,6 +38,12 @@ print("[ULX Shortcut] Try add Client side File: ulxshortcut/hkEditor.lua")
 AddCSLuaFile("ulxshortcut/hkEditor.lua")
 if CLIENT then
 	include("ulxshortcut/hkEditor.lua")
+end
+
+print("[ULX Shortcut] Try add Client side File: ulxshortcut/vars.lua")
+AddCSLuaFile("ulxshortcut/vars.lua")
+if CLIENT then
+	include("ulxshortcut/vars.lua")
 end
 
 print("[ULX Shortcut] Loading Language Files...")
@@ -64,7 +73,6 @@ end
 
 print("[ULX Shortcut] Checking Newer Version...")
 http.Fetch( "https://minbird.github.io/versions/ulxshortcutNewerVer", function(data)
-	print(data)
 	if data == "" or data == nil then return end
 	local ver = util.JSONToTable( data )
 	if ver == nil or ver.Num == nil or ver.Str == nil then return end

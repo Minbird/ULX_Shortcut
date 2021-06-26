@@ -142,7 +142,15 @@ function ulxSTC:RunCommandByCmdStr( cmdStr, targetPlys, InstantArgs )
 			if v == "NumArg" then
 				NumArgCount = NumArgCount + 1
 				--local numArg = ulxSTC:GetArgOnHKByNum( num, "NumArg", NumArgCount )
-				table.insert(args,InstantArgs[InstantArgsCount])
+				local narg = InstantArgs[InstantArgsCount]
+				if not isnumber(tonumber(narg)) then -- it is math
+					narg = ulxSTC:CalculateStr( narg, targetPlys )
+					if isstring(narg) then -- threw error
+						chat.AddText( Color( 255, 0, 0 ), ulxSTC:Str( "CalculateError", ulxSTC:Str( narg ) ) )
+						return
+					end
+				end
+				table.insert(args,narg)
 				if numArg == nil then InstantArgsCount = InstantArgsCount + 1 end
 			end
 
@@ -268,6 +276,82 @@ function ulxSTC:hasNumArg( mo ) -- this funtion receive module table, and return
 end
 
 --ulxSTC:AddCommandHK( "테스트", nil, Color(255,150,255), "icon16/add.png" )
+local mathList = {}
+function ulxSTC:CalculateStr( mat, targets )
+
+	if not isstring(mat) then return "NotString" end
+	
+	local m = ulxSTC:StrVarsToNumerical( mat, targets )
+	print(m)
+	local func = CompileString("return " .. m, "ULX Shortcut Calculating", false)
+	if isstring(func) then
+		return "CompileError"
+	end
+	setfenv(func, mathList)
+	if not pcall(function() func() end) then return "CalError" end
+	local y = func()
+	return y or "CalError"
+end
+
+mathList.pi = math.pi
+mathList.abs = math.abs
+mathList.acos = math.acos
+mathList.ceil = math.ceil
+mathList.Clamp = math.Clamp
+mathList.EaseInOut = math.EaseInOut
+mathList.floor = math.floor
+mathList.fmod = math.fmod
+mathList.ldexp = math.ldexp
+mathList.max = math.max
+mathList.min = math.min
+mathList.pow = math.pow
+mathList.Rand = math.Rand
+mathList.random = math.random
+mathList.Remap = math.Remap
+mathList.Round = math.Round
+mathList.sqrt = math.sqrt
+mathList.TimeFraction = math.TimeFraction
+mathList.Truncate = math.Truncate
+
+local numVars = numVars or {}
+local numVarList = numVarList or {}
+function ulxSTC:AddNumVar( VarStr, Func, help )
+	local str = string.Explode( " ", VarStr )
+	local VarStr = str[1]
+	table.remove(str, 1)
+	table.insert(numVars, {Str= "{" .. VarStr .. "}", Func = Func, help=help, args=str})
+	table.insert(numVarList, VarStr)
+	print("[ULX Shortcut | Vars] Var Added... " .. VarStr)
+end
+
+function ulxSTC:GetNumVar( VarStr, targets, arg )
+	for k, v in pairs(ulxSTC:GetAllVars()) do
+		if v.Str == VarStr then
+			if not table.IsEmpty(v.args) then
+				return v.Func(targets, arg) 
+			end
+			return v.Func(targets)
+		end
+	end
+end
+
+function ulxSTC:GetVarList()
+	return numVarList
+end
+
+function ulxSTC:GetAllVars()
+	return numVars
+end
+
+function ulxSTC:StrVarsToNumerical( str, targets ) -- receive str, also return str
+	local str = str or ""
+	for k, v in pairs(ulxSTC:GetAllVars()) do
+		if string.find(str, v.Str) then
+			str = string.Replace(str, v.Str, ulxSTC:GetNumVar( v.Str, targets ))
+		end
+	end
+	return str
+end
 
 if CLIENT then
 	ulxSTC:ReadCommandHK()
