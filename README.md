@@ -26,6 +26,7 @@ Any ULX command that required target player(s).
 
 English
 한국어 (Korean)
+日本語(Japanese)
 
 
 
