@@ -2,17 +2,17 @@ print("[ULX Shortcut] Start Up System!")
 
 
 ulxSTC = {}
-ulxSTC.CurVersion = 5
-ulxSTC.CurVersionString = "1.1"
-ulxSTC.NewerVersion = 5
-ulxSTC.NewerVersionString = "1.1"
+ulxSTC.CurVersion = 6
+ulxSTC.CurVersionString = "1.11"
+ulxSTC.NewerVersion = 6
+ulxSTC.NewerVersionString = "1.11"
 
 
 print("///////////////////////////////")
 print("//	ULX Shortcut StartUp	//")
 print("///////////////////////////////")
 print("System Version: " .. ulxSTC.CurVersionString)
-print("System Version Date: 2021.6.26\n")
+print("System Version Date: 2021.8.27\n")
 print("[ULX Shortcut] Loading...")
 print("[ULX Shortcut] Loading Main Files...")
 
