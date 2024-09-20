@@ -12,9 +12,9 @@ ulxSTC:MakeUI( "SandBox_Default" )
 
 ulxSTC:ChangeLang("SystemLang")
 
-function LanguageChanged( lang )
-	print(lang)
-	ulxSTC:ChangeLang(lang) 
+function LanguageChanged( L )
+	print(L)
+	ulxSTC:ChangeLang(L) 
 end
 
 print("[ULX Shortcut] Init Complete.")
