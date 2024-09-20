@@ -27,7 +27,8 @@ Any ULX command that required target player(s).
 English
 한국어 (Korean)
 日本語 (Japanese)
-Русский (Russian)
+Русский (Russian) By @Blueberryy
+Türkçe (Turkish) By @NovaDiablox
 
 
 
